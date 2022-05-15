@@ -1,6 +1,8 @@
 pragma solidity =0.7.6;
 // Developed by Orcania (https://orcania.io/)
 
+import "OMS.sol";
+
 interface IOCA{
          
     function name() external view returns (string memory);
@@ -33,55 +35,6 @@ interface IOCA{
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value); 
   
-}
-
-abstract contract OMS { //Orcania Management Standard
-
-    address private _owner;
-    mapping(address => uint256) private _manager;
-    
-    event OwnershipTransfer(address indexed newOwner);
-    event SetManager(address indexed manager, uint256 state);
-
-    constructor() {
-        _owner = msg.sender;
-        _manager[msg.sender] = 1;
-
-        emit SetManager(msg.sender, 1);
-    }
-
-    //Modifiers ==========================================================================================================================================
-    modifier Owner() {
-        require(msg.sender == _owner, "OMS: NOT_OWNER");
-        _;  
-    }
-
-    modifier Manager() {
-      require(_manager[msg.sender] == 1, "OMS: NOT_MANAGER");
-      _;  
-    }
-
-    //Read functions =====================================================================================================================================
-    function owner() external view returns (address) {
-        return _owner;
-    }
-
-    function manager(address user) external view returns(bool) {
-        return _manager[user] == 1;
-    }
-    
-    //Write functions ====================================================================================================================================
-    function setNewOwner(address user) external Owner {
-        _owner = user;
-        emit OwnershipTransfer(user);
-    }
-
-    function setManager(address user, uint256 state) external Owner {
-        _manager[user] = state;
-        emit SetManager(user, state);
-    }
-
-
 }
 
 abstract contract OrcaniaMath {
